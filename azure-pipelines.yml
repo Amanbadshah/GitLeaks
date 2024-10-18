@@ -1,0 +1,80 @@
+trigger:
+- main
+
+pool:
+  name: 'Default'
+
+jobs:
+- job: BuildAndTest
+  displayName: 'Build, Test, and Run GitLeaks'
+  pool:
+    name: 'Default'
+    demands:
+      - agent.name -equals DESKTOP-IGD4N6V
+
+  steps:
+  # Step to checkout the code
+  - checkout: self
+
+  # Step to set the JAVA_HOME environment variable
+  - script: |
+      echo "##vso[task.setvariable variable=JAVA_HOME]C:\Program Files\Java\jdk-17.0.2"
+      echo "JAVA_HOME is set to %JAVA_HOME%"
+    displayName: 'Set JAVA_HOME'
+
+  # Step to run Maven build
+  - task: Maven@4
+    inputs:
+      mavenPomFile: 'pom.xml'
+      publishJUnitResults: true
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      javaHomeOption: 'Path'
+      jdkDirectory: 'C:\Program Files\Java\jdk-17.0.2'
+      mavenVersionOption: 'Path'
+      mavenDirectory: 'C:\Program Files\apache-maven-3.9.6'
+      mavenSetM2Home: true
+      mavenAuthenticateFeed: false
+      effectivePomSkip: false
+      sonarQubeRunAnalysis: false
+      goals: 'clean install'
+
+  # Step to run unit tests
+  - script: mvn test
+    displayName: 'Run unit tests'
+
+  # Step to run Gitleaks
+  - task: Gitleaks@2
+    inputs:
+      scanlocation: '$(Build.SourcesDirectory)'
+      configtype: 'predefined'
+      predefinedconfigfile: 'UDMSecretChecksv8.toml'
+      reportformat: 'json'
+      outputfile: '$(Build.ArtifactStagingDirectory)/gitleaks-report.json'
+    displayName: 'Run Gitleaks'
+
+# Step to copy the Gitleaks report to the Artifact Staging Directory
+  - script: |
+      echo "Copying Gitleaks report to $(Build.ArtifactStagingDirectory)"
+      copy "D:\agent\vsts-agent-win-x64-3.245.0\_work\_temp\gitleaks-report-*.json" "$(Build.ArtifactStagingDirectory)\gitleaks-report.json"
+    displayName: 'Copy Gitleaks Report'
+
+  # Step to list the contents of the Artifact Staging Directory
+  - script: |
+      echo "Listing contents of $(Build.ArtifactStagingDirectory):"
+      dir "$(Build.ArtifactStagingDirectory)"
+    displayName: 'List Artifact Staging Directory Contents'
+
+  # Step to print the location of the generated Gitleaks report
+  - script: |
+      if exist "$(Build.ArtifactStagingDirectory)\gitleaks-report.json" (
+        echo "Gitleaks report exists at $(Build.ArtifactStagingDirectory)\gitleaks-report.json"
+      ) else (
+        echo "##vso[task.logissue type=error]Gitleaks report does not exist."
+        exit /b 1
+      )
+    displayName: 'Verify Gitleaks Report'
+
+  # Step to publish the Gitleaks report
+  - publish: '$(Build.ArtifactStagingDirectory)/gitleaks-report.json'
+    artifact: gitleaks-report
+    displayName: 'Publish Gitleaks Report'
