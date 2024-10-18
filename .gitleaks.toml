@@ -1,0 +1,5 @@
+[[rules]]
+id = "api-secret-key"
+description = "API Secret Key"
+regex = '''(?i)api\.secret\.key\s*=\s*['"]?[a-zA-Z0-9\-]+['"]?'''
+tags = ["apikey"]
