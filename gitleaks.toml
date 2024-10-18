@@ -1,7 +1,5 @@
-title = "GitLeaks Config"
-description = "GitLeaks configuration to detect secrets in the project"
-
 [[rules]]
-description = "Generic API Key"
-regex = '''api\.secret\.key\s*=\s*['"]?[0-9A-Z\-]+['"]?'''
+id = "api-secret-key"
+description = "API Secret Key"
+regex = '''(?i)api\.secret\.key\s*=\s*['"]?[a-zA-Z0-9\-]+['"]?'''
 tags = ["apikey"]
