@@ -42,17 +42,17 @@ jobs:
   - script: mvn test
     displayName: 'Run unit tests'
 
-  # Step to run Gitleaks
+  # Step to run Gitleaks with custom config
   - task: Gitleaks@2
     inputs:
       scanlocation: '$(Build.SourcesDirectory)'
-      configtype: 'predefined'
-      predefinedconfigfile: 'UDMSecretChecksv8.toml'
+      configtype: 'custom'
+      customconfigfile: '$(Build.SourcesDirectory)/gitleaks.toml'
       reportformat: 'json'
       outputfile: '$(Build.ArtifactStagingDirectory)/gitleaks-report.json'
-    displayName: 'Run Gitleaks'
+    displayName: 'Run Gitleaks with Custom Config'
 
-# Step to copy the Gitleaks report to the Artifact Staging Directory
+  # Step to copy the Gitleaks report to the Artifact Staging Directory
   - script: |
       echo "Copying Gitleaks report to $(Build.ArtifactStagingDirectory)"
       copy "D:\agent\vsts-agent-win-x64-3.245.0\_work\_temp\gitleaks-report-*.json" "$(Build.ArtifactStagingDirectory)\gitleaks-report.json"
@@ -64,7 +64,7 @@ jobs:
       dir "$(Build.ArtifactStagingDirectory)"
     displayName: 'List Artifact Staging Directory Contents'
 
-  # Step to print the location of the generated Gitleaks report
+  # Step to verify the Gitleaks report
   - script: |
       if exist "$(Build.ArtifactStagingDirectory)\gitleaks-report.json" (
         echo "Gitleaks report exists at $(Build.ArtifactStagingDirectory)\gitleaks-report.json"
