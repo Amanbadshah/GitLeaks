@@ -47,7 +47,7 @@ jobs:
     inputs:
       scanlocation: '$(Build.SourcesDirectory)'
       configtype: 'custom'
-      customconfigfile: '$(Build.SourcesDirectory)/gitleaks.toml'
+      customconfigfile: 'D:\agent\vsts-agent-win-x64-3.245.0\_work\3\s\.gitleaks.toml'  # Updated path
       reportformat: 'json'
       outputfile: '$(Build.ArtifactStagingDirectory)/gitleaks-report.json'
     displayName: 'Run Gitleaks with Custom Config'
@@ -64,7 +64,7 @@ jobs:
       dir "$(Build.ArtifactStagingDirectory)"
     displayName: 'List Artifact Staging Directory Contents'
 
-  # Step to verify the Gitleaks report
+  # Step to print the location of the generated Gitleaks report
   - script: |
       if exist "$(Build.ArtifactStagingDirectory)\gitleaks-report.json" (
         echo "Gitleaks report exists at $(Build.ArtifactStagingDirectory)\gitleaks-report.json"
