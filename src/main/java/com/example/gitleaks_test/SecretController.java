@@ -12,7 +12,7 @@ public class SecretController {
     private String secretKey;
     @Value("${api.secret.key1}")
     private String secretKey1;
-
+ private String Amna="Password@123";
     @GetMapping("/secret")
     public String getSecret() {
 
@@ -23,6 +23,8 @@ public class SecretController {
     public String getSecret1() {
         return "The secret key is: " + secretKey1;
     }
+    
+    
     
 
 }
