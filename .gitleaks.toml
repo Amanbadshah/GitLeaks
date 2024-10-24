@@ -1,6 +1,6 @@
 [[rules]]
 id = "api-secret-key"
-id= "Amna"
+id2= "Amna"
 description = "API Secret Key"
 regex = '''(?i)api\.secret\.key\s*=\s*['"]?[a-zA-Z0-9\-]+['"]?'''
 tags = ["apikey"]
