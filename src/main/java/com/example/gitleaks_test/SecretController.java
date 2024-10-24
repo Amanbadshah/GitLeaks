@@ -1,7 +1,5 @@
 package com.example.gitleaks_test;
 
-
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,23 +10,24 @@ public class SecretController {
     private String secretKey;
     @Value("${api.secret.key1}")
     private String secretKey1;
- private String Amna="Password@123";
+
     @GetMapping("/secret")
     public String getSecret() {
-
-        return "The secret key is: " + secretKey;
+        // Return a redacted version of the secret key
+        return "The secret key is: " + maskSecret(secretKey);
     }
 
     @GetMapping("/secret1")
     public String getSecret1() {
-        return "The secret key is: " + secretKey1;
+        // Return a redacted version of the secret key1
+        return "The secret key is: " + maskSecret(secretKey1);
     }
-    
-    
-    
 
+    private String maskSecret(String secret) {
+        // Mask all but the last 4 characters of the secret
+        if (secret.length() <= 4) {
+            return "****";
+        }
+        return "****" + secret.substring(secret.length() - 4);
+    }
 }
-
-
-
-
