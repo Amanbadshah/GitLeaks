@@ -15,7 +15,7 @@ public class SecretController {
 
     @GetMapping("/secret")
     public String getSecret() {
-<<<<<<< HEAD
+
         return "The secret key is: " + secretKey;
     }
 
@@ -24,12 +24,9 @@ public class SecretController {
         return "The secret key is: " + secretKey1;
     }
     
-=======
-    // This is a hardcoded secret for testing Gitleaks
-    String hardcodedSecret = "HARDCODED-SECRET-12345";
-    return "The secret key is: " + secretKey + ", Hardcoded Secret: " + hardcodedSecret;
+
 }
 
->>>>>>> 5b8a9583ba976c35a0be1b502011e453e553b2b0
-}
+
+
 
